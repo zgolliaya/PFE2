@@ -1,0 +1,51 @@
+pipeline {
+    agent any
+    
+    stages {
+        stage('Checkout') {
+            steps {
+                   git branch: 'B2B', url: 'https://github.com/zgolliaya/PFE.git'
+            }
+        }
+        
+        
+        stage('Run Tests') {
+            steps {
+              
+               bat "pip install robotframework-seleniumlibrary"
+               //bat "  apt-get update -y "
+               //bat "  apt-get install -y chromium-driver "
+               
+
+               bat "robot ./test2/add_user_management.robot"
+
+                
+            }
+        }
+    }
+
+    post {
+        always {
+            script {
+                step([
+                    $class: 'RobotPublisher',
+                    outputPath: './',
+                    outputFileName: "*.xml",
+                    disableArchiveOutput: false,
+                    passThreshold: 0,
+                    unstableThreshold: 0,
+                    otherFiles: "*.png",
+                ])
+                
+                mail to: 'zgolliaya2000@gmail.com',
+                     subject: "Build ${currentBuild.fullDisplayName}",
+                     body: "The build was ${currentBuild.result}: Check console output at ${env.BUILD_URL} to view the results."
+            }
+        }
+        failure {
+            mail to: 'zgolliaya2000@gmail.com',
+                 subject: "Failed Build ${currentBuild.fullDisplayName}",
+                 body: "The build FAILED: Check console output at ${env.BUILD_URL} to view the results."
+        }
+    }
+}
