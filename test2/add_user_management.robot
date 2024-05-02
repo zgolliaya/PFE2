@@ -18,8 +18,8 @@ login_toB2C
     sleep      2s 
     Click Element    //button[contains(., 'Continue')]
     sleep      4s 
-    Click Element        //span[@class='menu-title' and text()='User Management'] 
-    sleep  4s 
+   // Click Element        //span[@class='menu-title' and text()='User Management'] 
+    //sleep  4s 
     
 
     
