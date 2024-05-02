@@ -24,28 +24,5 @@ pipeline {
         }
     }
 
-    post {
-        always {
-            script {
-                step([
-                    $class: 'RobotPublisher',
-                    outputPath: './',
-                    outputFileName: "*.xml",
-                    disableArchiveOutput: false,
-                    passThreshold: 0,
-                    unstableThreshold: 0,
-                    otherFiles: "*.png",
-                ])
-                
-                mail to: 'zgolliaya2000@gmail.com',
-                     subject: "Build ${currentBuild.fullDisplayName}",
-                     body: "The build was ${currentBuild.result}: Check console output at ${env.BUILD_URL} to view the results."
-            }
-        }
-        failure {
-            mail to: 'zgolliaya2000@gmail.com',
-                 subject: "Failed Build ${currentBuild.fullDisplayName}",
-                 body: "The build FAILED: Check console output at ${env.BUILD_URL} to view the results."
-        }
-    }
+
 }
