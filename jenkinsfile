@@ -12,12 +12,12 @@ pipeline {
         stage('Run Tests') {
             steps {
               
-               bat "pip install robotframework-seleniumlibrary"
-               //bat "  apt-get update -y "
-               //bat "  apt-get install -y chromium-driver "
+               sh "pip install robotframework-seleniumlibrary"
+               sh "  apt-get update -y "
+               sh "  apt-get install -y chromium-driver "
                
 
-               bat "robot ./test2/add_user_management.robot"
+               sh  "robot ./test2/add_user_management.robot"
 
                 
             }
