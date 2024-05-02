@@ -17,7 +17,7 @@ pipeline {
                sh "  apt-get install -y chromium-driver "
                
 
-               sh  "robot ./test2/add_user_management.robot"
+               sh  " robot ./test2/add_user_management.robot"
 
                 
             }
