@@ -9,7 +9,10 @@ loginB2C
   login_toB2C
 *** Keywords ***
 login_toB2C
-    Open Browser    ${URL}       Chrome      
+    ${options}  Evaluate  sys.modules['selenium.webdriver'].ChromeOptions()  sys
+    Call Method  ${options}  add_argument  --no-sandbox
+    Call Method  ${options}  add_argument  --headless
+    Open Browser  ${URL}    Chrome     options=${options} 
     Maximize Browser Window
     sleep      2s 
     Input Text       //input[contains(@name, '_username')]     ${userB2C}
