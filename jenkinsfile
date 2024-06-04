@@ -1,0 +1,75 @@
+pipeline {
+    agent any
+    
+    stages {
+        stage('Checkout') {
+            steps {
+                git branch: 'B2C', url: 'https://github.com/zgolliaya/PFE2.git'
+            }
+        }
+        
+        stage('Run Tests') {
+            steps {
+                // Installation des dépendances
+                bat "pip install robotframework-seleniumlibrary"
+                bat "pip install robotframework-requests"
+                bat "pip install robotframework-JSONLibrary"
+                
+                // Exécution des tests Robot Framework avec génération de rapports JUnit XML
+                bat "robot --outputdir ./robot-framework-results --xunit output.xml ./test2/API_B2C.robot"
+            }
+        }
+    }
+    
+    post {
+        always {
+            // Publication des résultats des tests au format JUnit XML
+            junit 'robot-framework-results/output.xml'
+            
+            // Publication des résultats des tests avec le plugin Robot Publisher
+            script {
+                step([
+                    $class : 'RobotPublisher',
+                    outputPath :'./robot-framework-results',
+                    outputFileName : "*.xml", // Correction : Utiliser "*.xml" pour capturer tous les fichiers XML
+                    disableArchiveOutput : true,
+                    logFileName : "log.html",
+                    reportFileName : "rapport.html",
+                    passThreshold : 95,
+                    unstableThreshold: 90,
+                    onlyCritical        : false
+                    //otherFiles : "*.png",
+                  
+                ])
+            }
+            
+            // Script pour extraire le nombre de tests exécutés
+            script {
+                def testResult = readFile('robot-framework-results/output.xml')
+                def match = (testResult =~ /<testsuite[^>]+tests="(\d+)"/)
+                if (match) {
+                    def numTests = match[0][1]
+                    echo "Nombre de tests exécutés : ${numTests}"
+                } else {
+                    echo "Nombre de tests exécutés : non disponible"
+                }
+            }
+        }
+        
+        // Bloc post pour envoyer des e-mails en cas de succès ou d'échec
+        failure {
+            emailext attachmentsPattern: 'test.zip', 
+                      body: '''${SCRIPT, template="groovy-html.template"}''', 
+                      subject: "${env.JOB_NAME} - Build # ${env.BUILD_NUMBER} - Failed", 
+                      mimeType: 'text/html',
+                      to: "zgolliaya2000@gmail.com"
+        }
+        success {
+            emailext attachmentsPattern: 'test.zip', 
+                      body: '''${SCRIPT, template="groovy-html.template"}''', 
+                      subject: "${env.JOB_NAME} - Build # ${env.BUILD_NUMBER} - Successful", 
+                      mimeType: 'text/html',
+                      to: "zgolliaya2000@gmail.com"
+        }      
+    }
+}
