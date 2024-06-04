@@ -51,7 +51,7 @@ ${logout}             //div[@class='menu-item px-5']/a[text()='Sign Out']
 ${soleil}       //a[contains(@class, 'btn btn-icon btn-custom btn-icon-muted btn-active-light btn-active-color-primary w-35px h-35px')]
 ${dark}        //a[contains(.,"Dark")]
 #test API
-${base_URL}       https://pumc-b2c-api.asteroidea.co
+${base_URL}       https://b2c.pumc.com.kw/
 ${register}      /api/auth/verification/send
 ${OTP}        /api/auth/verify
 ${sign_in}     /api/auth/register
@@ -61,3 +61,6 @@ ${vehicule_Type}     /api/vehicles/types
 ${Parking_list}     /api/parking/list
 ${Add_Vehicule}     /api/vehicles/add
 ${pre_booking_order}    /api/pre-booking/order
+${list_sub}        /api/subscriptions/list?page=1
+${add_sub}    /api/subscriptions/add
+
